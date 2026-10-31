@@ -1,30 +1,23 @@
-## Summary
+## Pull Request Template
 
-Describe the purpose of this pull request. What does it do, and why is it needed?
+**Referenced Issue:** _Add Here_
 
-Closes #(issue number) if applicable.
+**Reviewers:** _Add Here_
 
----
+> [!NOTE]
+> Inform your reviewers using Slack on PRs in addition to tagging them on the PR.
 
-## Changes Made
-- [ ] Added a new feature
-- [ ] Updated existing functionality
-- [ ] Improved documentation
-- [ ] Refactored internal code
-- [ ] Fixed a bug
+**Description of changes**
 
-Briefly summarize the major changes:
+_Include a description of changes in the PR. This can include services/pages affected, API routes added and new reusable components created._
 
--  
--  
--
-
----
-
-## Testing
+**Testing**
 
 How was this change tested?
 
 - [ ] Manual end-to-end testing
 - [ ] Unit Tests
 - [ ] CI checks passed
+
+> [!IMPORTANT]
+> Run a local build first to ensure everything is working. If applicable, include a screenrecording/screenshot of the feature you built.
