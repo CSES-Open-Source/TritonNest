@@ -26,7 +26,7 @@ export default function Login() {
         onClick={handleLogin}
         className="bg-triton-navy mt-6 w-full rounded-lg px-4 py-2 font-semibold text-white"
       >
-        Sign in with UCSD SSO
+        Sign in with UCSD Google account
       </button>
       {error && <p className="mt-4 text-sm text-red-600">{error}</p>}
     </div>

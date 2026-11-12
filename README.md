@@ -21,7 +21,7 @@ Off-campus housing is chaotic. Students deal with unvetted social media groups, 
 | Frontend            | React 19, Vite, TailwindCSS v4, React Router                                   |
 | Backend             | Node.js 24, Express 5, Socket.io (real-time chat)                              |
 | Database & Storage  | MongoDB (Mongoose), Firebase Storage (AWS S3 as an alternative)                |
-| Auth & Integrations | Firebase Auth (UCSD SSO through the Microsoft provider), Google Maps API       |
+| Auth & Integrations | Firebase Auth (Google provider → UCSD SSO + Duo), Google Maps API              |
 | Tooling             | npm workspaces, ESLint, Prettier, Node test runner + Supertest, GitHub Actions |
 
 ## Repository Structure
@@ -92,7 +92,6 @@ Each env file is documented inline. The server validates its env at startup with
 | server | `ALLOWED_EMAIL_DOMAIN`          | Defaults to `ucsd.edu`                             |
 | server | `GOOGLE_MAPS_API_KEY`           | Server-side Distance Matrix / Places               |
 | client | `VITE_FIREBASE_*`               | Firebase web app config                            |
-| client | `VITE_MICROSOFT_TENANT_ID`      | UCSD's Azure AD tenant for SSO                     |
 | client | `VITE_GOOGLE_MAPS_API_KEY`      | Browser Maps key (referrer-restricted)             |
 
 > [!CAUTION]
@@ -113,7 +112,7 @@ Each env file is documented inline. The server validates its env at startup with
 
 ## How Auth Works
 
-1. The client signs in with Firebase Auth through the **Microsoft provider** (UCSD accounts are Microsoft 365), restricted to UCSD's tenant.
+1. The client signs in with Firebase Auth through the **Google provider**, limited to the `ucsd.edu` domain. UCSD Google accounts redirect to **UCSD SSO + Duo** automatically, so campus identity verification is handled by UCSD.
 2. Every API request sends `Authorization: Bearer <Firebase ID token>`. This is handled automatically by `client/src/lib/api.js`.
 3. The server's `requireAuth` middleware verifies the token with Firebase Admin and **rejects any email not ending in `@ucsd.edu`**. The client-side check is for UX only. The server is the source of truth.
 4. Socket.io connections pass the same token in `auth.token` and are verified the same way.
@@ -137,13 +136,13 @@ Socket events: `conversation:join`, `message:send` → `message:new`.
 
 The codebase is split so each developer owns one vertical slice, frontend through backend. Search the code for `TODO(<workstream>)` to find starter tasks.
 
-| #   | Workstream                 | Owner | Client                                | Server                                                           | First milestones                                                                     |
-| --- | -------------------------- | ----- | ------------------------------------- | ---------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
-| 1   | **Auth & Profiles**        | _TBD_ | `features/auth`, `context/`           | `middleware/auth.js`, `routes/users.js`, `models/User.js`        | Firebase project + Microsoft provider configured, profile edit form, onboarding flow |
-| 2   | **Sublease Marketplace**   | _TBD_ | `features/listings`                   | `routes/listings.js`, `models/Listing.js`, `services/storage.js` | Create-listing form, photo uploads, listing detail page, edit/delete                 |
-| 3   | **Housing Filters & Maps** | _TBD_ | `features/filters`                    | `services/maps.js`                                               | Rent/date filters UI, commute times to campus, nearby grocery/dining, map view       |
-| 4   | **In-App Messaging**       | _TBD_ | `features/messaging`, `lib/socket.js` | `socket/`, `models/Conversation.js`, `models/Message.js`         | Conversations API, persist messages, chat UI, unread counts                          |
-| 5   | **Compatibility Matching** | _TBD_ | `features/matching`                   | `models/User.js` (preferences), new `routes/matches.js`          | Preferences questionnaire, scoring algorithm, ranked matches page                    |
+| #   | Workstream                 | Owner | Client                                | Server                                                           | First milestones                                                               |
+| --- | -------------------------- | ----- | ------------------------------------- | ---------------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| 1   | **Auth & Profiles**        | _TBD_ | `features/auth`, `context/`           | `middleware/auth.js`, `routes/users.js`, `models/User.js`        | Google sign-in enabled in Firebase, profile edit form, onboarding flow         |
+| 2   | **Sublease Marketplace**   | _TBD_ | `features/listings`                   | `routes/listings.js`, `models/Listing.js`, `services/storage.js` | Create-listing form, photo uploads, listing detail page, edit/delete           |
+| 3   | **Housing Filters & Maps** | _TBD_ | `features/filters`                    | `services/maps.js`                                               | Rent/date filters UI, commute times to campus, nearby grocery/dining, map view |
+| 4   | **In-App Messaging**       | _TBD_ | `features/messaging`, `lib/socket.js` | `socket/`, `models/Conversation.js`, `models/Message.js`         | Conversations API, persist messages, chat UI, unread counts                    |
+| 5   | **Compatibility Matching** | _TBD_ | `features/matching`                   | `models/User.js` (preferences), new `routes/matches.js`          | Preferences questionnaire, scoring algorithm, ranked matches page              |
 
 Shared files (`App.jsx`, `Layout.jsx`, `routes/index.js`, `models/User.js`) are touched by several workstreams. Keep changes to them small and call them out in your PR.
 
