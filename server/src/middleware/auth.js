@@ -1,10 +1,10 @@
-import { getFirebaseAdmin } from '../config/firebase.js';
+import { getAdminAuth } from '../config/firebase.js';
 import { env } from '../config/env.js';
 import { HttpError } from './error.js';
 
 /** Verifies a Firebase ID token and confirms the user has a verified UCSD email. */
 export async function verifyIdToken(token) {
-  const decoded = await getFirebaseAdmin().auth().verifyIdToken(token);
+  const decoded = await getAdminAuth().verifyIdToken(token);
   const email = decoded.email?.toLowerCase() ?? '';
   if (!email.endsWith(`@${env.allowedEmailDomain}`) || decoded.email_verified === false) {
     throw new HttpError(403, `A verified @${env.allowedEmailDomain} account is required`);

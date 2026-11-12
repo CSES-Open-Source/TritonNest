@@ -12,6 +12,7 @@ const raw = cleanEnv(process.env, {
   MONGODB_URI: str({ devDefault: 'mongodb://localhost:27017/tritonnest' }),
   ALLOWED_EMAIL_DOMAIN: str({ default: 'ucsd.edu' }),
   FIREBASE_SERVICE_ACCOUNT_JSON: str({ default: '', desc: 'Firebase Admin service account JSON' }),
+  GOOGLE_APPLICATION_CREDENTIALS: str({ default: '', desc: 'Path to the service account file' }),
   FIREBASE_STORAGE_BUCKET: str({ default: '' }),
   GOOGLE_MAPS_API_KEY: str({ default: '' }),
 });
@@ -23,6 +24,7 @@ export const env = {
   mongodbUri: raw.MONGODB_URI,
   allowedEmailDomain: raw.ALLOWED_EMAIL_DOMAIN,
   firebaseServiceAccountJson: raw.FIREBASE_SERVICE_ACCOUNT_JSON,
+  googleApplicationCredentials: raw.GOOGLE_APPLICATION_CREDENTIALS,
   firebaseStorageBucket: raw.FIREBASE_STORAGE_BUCKET,
   googleMapsApiKey: raw.GOOGLE_MAPS_API_KEY,
 };

@@ -1,4 +1,4 @@
-import { getFirebaseAdmin } from '../config/firebase.js';
+import { getAdminStorage } from '../config/firebase.js';
 
 /**
  * Listing photo uploads go to Firebase Storage by default.
@@ -6,7 +6,7 @@ import { getFirebaseAdmin } from '../config/firebase.js';
  * To switch to AWS S3, keep this function's signature and swap the implementation.
  */
 export async function getUploadUrl(path, contentType) {
-  const bucket = getFirebaseAdmin().storage().bucket();
+  const bucket = getAdminStorage().bucket();
   const [url] = await bucket.file(path).getSignedUrl({
     version: 'v4',
     action: 'write',

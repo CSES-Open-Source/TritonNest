@@ -1,19 +1,21 @@
-import admin from 'firebase-admin';
+import { initializeApp, getApps, cert, applicationDefault } from 'firebase-admin/app';
+import { getAuth } from 'firebase-admin/auth';
+import { getStorage } from 'firebase-admin/storage';
 import { env } from './env.js';
 
-let app;
-
 /** Lazily initialise Firebase Admin so the server can boot (and tests run) without credentials. */
-export function getFirebaseAdmin() {
-  if (app) return admin;
+function getAdminApp() {
+  if (getApps().length) return getApps()[0];
   const credential = env.firebaseServiceAccountJson
-    ? admin.credential.cert(JSON.parse(env.firebaseServiceAccountJson))
-    : process.env.GOOGLE_APPLICATION_CREDENTIALS
-      ? admin.credential.applicationDefault()
+    ? cert(JSON.parse(env.firebaseServiceAccountJson))
+    : env.googleApplicationCredentials
+      ? applicationDefault()
       : null;
   if (!credential) {
     throw new Error('Firebase Admin is not configured (see server/.env.example)');
   }
-  app = admin.initializeApp({ credential, storageBucket: env.firebaseStorageBucket });
-  return admin;
+  return initializeApp({ credential, storageBucket: env.firebaseStorageBucket || undefined });
 }
+
+export const getAdminAuth = () => getAuth(getAdminApp());
+export const getAdminStorage = () => getStorage(getAdminApp());
