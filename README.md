@@ -83,7 +83,7 @@ Open http://localhost:5173. Check the API at http://localhost:4000/api/health.
 
 ### Environment Variables
 
-Each env file is documented inline. See [`server/.env.example`](server/.env.example) and [`client/.env.example`](client/.env.example).
+Each env file is documented inline. The server validates its env at startup with envalid (`server/src/config/env.js`). In development, `MONGODB_URI` and `CLIENT_ORIGIN` fall back to local defaults. See [`server/.env.example`](server/.env.example) and [`client/.env.example`](client/.env.example).
 
 | Where  | Variable                        | Purpose                                            |
 | ------ | ------------------------------- | -------------------------------------------------- |

@@ -32,6 +32,10 @@ npm run db:up   # local MongoDB
 npm run dev     # client on :5173, server on :4000
 ```
 
+### Pre-commit hooks
+
+`npm install` sets up [Husky](https://typicode.github.io/husky/) automatically. On every commit, [lint-staged](https://github.com/lint-staged/lint-staged) runs ESLint (`--fix`) and Prettier on your staged files. If ESLint finds errors it can't fix, the commit is blocked. Fix them and commit again. Don't bypass the hook with `--no-verify`, because CI runs the same checks.
+
 ### Run the linter and formatter
 
 ```bash
@@ -68,7 +72,8 @@ npm run build
 - Put feature code in its workstream folder (`client/src/features/<name>`, plus the matching server route/model). See the Workstreams table in the [README](README.md#workstreams).
 - **Never trust the client for auth.** Every non-public route uses `requireAuth`, and authorization checks (e.g. "is this my listing?") happen on the server.
 - Validate request bodies on the server. Only accept fields you expect (see `routes/users.js` for the allowlist pattern).
-- Never commit secrets. Add new env vars to the right `.env.example` with a comment.
+- Never commit secrets. GitHub secret scanning with push protection will block pushes containing known key formats.
+- New server env vars go in **both** `server/src/config/env.js` (validated with [envalid](https://github.com/af/envalid), so the server fails fast with a clear message) and `server/.env.example`.
 - Add a server test in `server/test/` for each new route.
 - Use Tailwind utility classes. UCSD brand colors are available as `triton-navy`, `triton-blue`, and `triton-gold`.
 
