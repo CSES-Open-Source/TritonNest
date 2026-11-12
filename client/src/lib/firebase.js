@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app';
-import { getAuth, OAuthProvider } from 'firebase/auth';
+import { getAuth, GoogleAuthProvider } from 'firebase/auth';
 import { getStorage } from 'firebase/storage';
 
 const app = initializeApp({
@@ -13,13 +13,10 @@ const app = initializeApp({
 export const auth = getAuth(app);
 export const storage = getStorage(app);
 
-// UCSD accounts run on Microsoft 365, so SSO goes through the Microsoft provider.
-export const ucsdProvider = new OAuthProvider('microsoft.com');
-ucsdProvider.setCustomParameters({
-  prompt: 'select_account',
-  ...(import.meta.env.VITE_MICROSOFT_TENANT_ID && {
-    tenant: import.meta.env.VITE_MICROSOFT_TENANT_ID,
-  }),
-});
-
 export const ALLOWED_EMAIL_DOMAIN = import.meta.env.VITE_ALLOWED_EMAIL_DOMAIN ?? 'ucsd.edu';
+
+// UCSD accounts are Google Workspace accounts. Signing in with one redirects to UCSD SSO + Duo,
+// so the Google provider gives us campus verification for free. `hd` limits the account picker
+// to the UCSD domain; the server still enforces the domain on every request.
+export const ucsdProvider = new GoogleAuthProvider();
+ucsdProvider.setCustomParameters({ hd: ALLOWED_EMAIL_DOMAIN, prompt: 'select_account' });
