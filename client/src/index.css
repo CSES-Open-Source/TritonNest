@@ -1,0 +1,8 @@
+@import 'tailwindcss';
+
+@theme {
+  /* UCSD brand colors */
+  --color-triton-navy: #182b49;
+  --color-triton-blue: #00629b;
+  --color-triton-gold: #ffcd00;
+}

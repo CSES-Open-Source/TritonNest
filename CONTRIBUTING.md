@@ -1,61 +1,94 @@
-# Contributing to [Project Name]
+# Contributing to TritonNest
 
-We’re excited you’re interested in contributing to [Project Name]! This guide covers installation, local development, and how to contribute.
+Thanks for contributing to TritonNest! This guide covers local setup, our workflow, and how to get a PR merged.
 
 ## Installation
 
 ### Prerequisites
-- Language-specific prereqs (install node/go)
-- (usually include git/bash installation)
 
-### Installation
+- [Node.js 24+](https://nodejs.org/). We recommend [nvm](https://github.com/nvm-sh/nvm): `nvm install && nvm use`
+- [Git](https://git-scm.com/)
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/) for local MongoDB, or the team Atlas URI
+
+### Install
+
 ```bash
-fill this with install step
+git clone https://github.com/CSES-Open-Source/TritonNest.git
+cd TritonNest
+nvm use
+npm install
+cp server/.env.example server/.env
+cp client/.env.example client/.env.local
 ```
+
+Ask the EM for Firebase and Google Maps credentials, then fill in both env files.
+
 ## Development Setup
 
-### Install dependencies:
+### Run the app
+
 ```bash
-fill this with install step
+npm run db:up   # local MongoDB
+npm run dev     # client on :5173, server on :4000
 ```
 
-### Run the linter:
+### Run the linter and formatter
+
 ```bash
-fill this with linter step
+npm run lint
+npm run format
 ```
 
+### Run tests
 
-### Build the CLI:
 ```bash
-fill this with build step
+npm test
 ```
 
-## Contributing Guidelines
+### Build
 
-- Create a feature branch from `main` (e.g., `feat/add-postgres-stack`).
-- Use [Conventional Commits](https://www.conventionalcommits.org/) (`feat:`, `fix:`, `chore:`) to keep history clean and readable.
-- Include tests where applicable.
-- Run linting and tests before submitting a pull request.
-- Ensure your changes follow the existing project structure and registry-based stack system.
+```bash
+npm run build
+```
 
----
+> [!IMPORTANT]
+> CI runs `lint`, `format:check`, `test`, and `build` on every PR. Run them locally before pushing.
+
+## Workflow
+
+1. **Pick or open an issue** using the issue template. Assign yourself.
+2. **Branch from `main`**: `<type>/<short-description>`, e.g. `feat/listing-photo-upload`, `fix/chat-reconnect`.
+3. **Commit** with [Conventional Commits](https://www.conventionalcommits.org/): `feat:`, `fix:`, `docs:`, `refactor:`, `test:`, `chore:`. An optional scope helps, e.g. `feat(messaging): persist messages`.
+4. **Keep PRs small**, ideally under ~400 lines and focused on one issue.
+5. **Open a PR** using the template. Link the issue (`Closes #12`), request a reviewer, and ping them on Slack.
+6. **Get 1 approval and green CI**, then **squash and merge**. Delete your branch afterward.
+
+## Code Guidelines
+
+- Put feature code in its workstream folder (`client/src/features/<name>`, plus the matching server route/model). See the Workstreams table in the [README](README.md#workstreams).
+- **Never trust the client for auth.** Every non-public route uses `requireAuth`, and authorization checks (e.g. "is this my listing?") happen on the server.
+- Validate request bodies on the server. Only accept fields you expect (see `routes/users.js` for the allowlist pattern).
+- Never commit secrets. Add new env vars to the right `.env.example` with a comment.
+- Add a server test in `server/test/` for each new route.
+- Use Tailwind utility classes. UCSD brand colors are available as `triton-navy`, `triton-blue`, and `triton-gold`.
 
 ## Issue Labels
 
-When opening issues or reviewing pull requests, please apply the most relevant label(s) to help maintainers triage and prioritize them. Here’s a basic guide:
+When opening issues or reviewing pull requests, apply the most relevant label(s) to help with triage:
 
-| Label | When to Use |
-|-------|-------------|
-| `bug` | A reproducible error, crash, or incorrect behavior in Taco. |
-| `feature` | A new capability or enhancement that does not exist yet. |
-| `enhancement` | Improvements to existing features, performance, or developer experience. |
-| `docs` | Documentation updates, typos, or README/CONTRIBUTING changes. |
-| `refactor` | Code cleanup or restructuring without changing behavior. |
-| `ci` | Issues related to GitHub Actions, testing, or build pipelines. |
-| `good first issue` | Small, well-scoped issues suitable for new contributors. |
+| Label              | When to Use                                                              |
+| ------------------ | ------------------------------------------------------------------------ |
+| `bug`              | A reproducible error, crash, or incorrect behavior in TritonNest.        |
+| `feature`          | A new capability that does not exist yet.                                |
+| `enhancement`      | Improvements to existing features, performance, or developer experience. |
+| `docs`             | Documentation updates, typos, or README/CONTRIBUTING changes.            |
+| `refactor`         | Code cleanup or restructuring without changing behavior.                 |
+| `ci`               | Issues related to GitHub Actions, testing, or build pipelines.           |
+| `good first issue` | Small, well-scoped issues suitable for new contributors.                 |
+
+Workstream labels (`area:auth`, `area:listings`, `area:filters`, `area:messaging`, `area:matching`) show which slice an issue belongs to.
 
 **Tips:**
-- Most issues should have **one primary label**.
-- If an issue touches multiple areas (e.g., a feature that also needs docs), feel free to add more than one.
-- PRs should ideally match the label of the issue they close.
-  
+
+- Most issues should have **one primary label** plus one `area:` label.
+- PRs should ideally match the labels of the issue they close.
