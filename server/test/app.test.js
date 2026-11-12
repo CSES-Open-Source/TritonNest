@@ -3,7 +3,6 @@ import assert from 'node:assert/strict';
 import request from 'supertest';
 import { createApp } from '../src/app.js';
 
-process.env.NODE_ENV = 'test';
 const app = createApp();
 
 test('GET /api/health returns ok', async () => {
